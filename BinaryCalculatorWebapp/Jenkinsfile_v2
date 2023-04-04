@@ -63,5 +63,21 @@ spec:
         }
       }
     }
+
+    stage('Deploy') {
+      steps {
+        container('kubectl') {
+           sh """
+            sed -i 's/CLUSTER_NAME/${CLUSTER}/g' ./BinaryCalculatorWebapp/kubernetes/deployment.yaml
+            sed -i 's/CLUSTER_ZONE/${CLUSTER_ZONE}/g' ./BinaryCalculatorWebapp/kubernetes/deployment.yaml
+            sed -i 's/IMAGE_TAG/${IMAGE_TAG}/g' ./BinaryCalculatorWebapp/kubernetes/deployment.yaml
+            sed -i 's/APP_NAME/${APP_NAME}/g' ./BinaryCalculatorWebapp/kubernetes/service.yaml
+            kubectl apply -f ./BinaryCalculatorWebapp/kubernetes/deployment.yaml
+            kubectl apply -f ./BinaryCalculatorWebapp/kubernetes/service.yaml
+          """
+        }
+        sleep 30
+      }
+    }
   }
 }
