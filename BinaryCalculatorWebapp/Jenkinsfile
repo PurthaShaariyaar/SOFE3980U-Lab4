@@ -29,8 +29,7 @@ pipeline {
       steps {
         sh 'mvn package -DskipTests -f ./BinaryCalculatorWebapp/pom.xml'
         // sh 'docker build -t ${IMAGE_TAG} .'
-        sh '/builder/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file /var/lib/jenkins/creds.json'        sh 'gcloud auth activate-service-account --key-file /var/lib/jenkins/creds.json'
-        sh '/builder/google-cloud-sdk/bin/gcloud auth configure-docker'
+        sh '/builder/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file /var/lib/jenkins/creds.json'       
         // sh 'docker push ${IMAGE_TAG}' 
         sh '/builder/google-cloud-sdk/bin/gcloud builds submit -t ${IMAGE_TAG} .'
       }
