@@ -1,39 +1,8 @@
-// This is the final change that needs to be made
-
-// pipeline {
-//   agent any
-//   tools {
-//     maven 'maven' 
-//   }
-//   stages {
-//     stage ('Init') {
-//       steps {
-//         sh 'echo "Start of Job"'
-//         sh 'ls -la'
-//       }
-//     }
-//     stage ('test') {
-//       steps {
-//         sh 'mvn clean test -f ./BinaryCalculatorWebapp/pom.xml'
-//       }
-//     }
-//     stage ('build') {
-//       steps {
-//         sh 'mvn package -DskipTests -f ./BinaryCalculatorWebapp/pom.xml'
-//       }
-//     }
-//     stage ('Deploy') {
-//       steps {
-//         sh 'echo "bye bye bye"'
-//       }
-//     }
-//   }
-// }
+// Updated file
 pipeline {
   agent any
   tools {
     maven 'maven' 
-    // add Docker tool for building Docker images
     docker 'docker'
   }
   environment {
@@ -59,21 +28,16 @@ pipeline {
     stage ('build') {
       steps {
         sh 'mvn package -DskipTests -f ./BinaryCalculatorWebapp/pom.xml'
-        // build Docker image and tag with the GCR image tag
         sh 'docker build -t ${IMAGE_TAG} .'
-        // authenticate Docker to push to GCR using Jenkins credentials
         sh 'gcloud auth activate-service-account --key-file /var/lib/jenkins/creds.json'
         sh 'gcloud auth configure-docker'
-        // push Docker image to GCR
-        sh 'docker push ${IMAGE_TAG}'
+        sh 'docker push ${IMAGE_TAG}' 
       }
     }
     stage ('Deploy') {
       steps {
-        // authenticate Kubernetes using Jenkins credentials
         sh 'gcloud auth activate-service-account --key-file /var/lib/jenkins/creds.json'
         sh 'gcloud container clusters get-credentials ${CLUSTER} --zone ${CLUSTER_ZONE} --project ${PROJECT}'
-        // deploy Kubernetes manifests
         sh 'kubectl apply -f ./kubernetes/manifests'
       }
     }
