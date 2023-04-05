@@ -1,4 +1,4 @@
-// Changes
+// Change
 pipeline {
   agent any
   tools {
