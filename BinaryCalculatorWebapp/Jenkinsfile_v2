@@ -46,7 +46,7 @@ spec:
         sh 'echo "Start of Job"'
       }
     }
-    //stage ('test file') {
+    //stage ('test file for staging') {
     //  steps {
     //    sh 'mvn clean test -f ./BinaryCalculatorWebapp/pom.xml'
     //  }
