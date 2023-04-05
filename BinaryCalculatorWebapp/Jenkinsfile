@@ -3,7 +3,7 @@ pipeline {
   agent any
   tools {
     maven 'maven' 
-    docker 'docker'
+    // docker 'docker'
   }
   environment {
     PROJECT = "lab-4-deliverable"
@@ -28,10 +28,11 @@ pipeline {
     stage ('build') {
       steps {
         sh 'mvn package -DskipTests -f ./BinaryCalculatorWebapp/pom.xml'
-        sh 'docker build -t ${IMAGE_TAG} .'
+        // sh 'docker build -t ${IMAGE_TAG} .'
         sh 'gcloud auth activate-service-account --key-file /var/lib/jenkins/creds.json'
         sh 'gcloud auth configure-docker'
-        sh 'docker push ${IMAGE_TAG}' 
+        // sh 'docker push ${IMAGE_TAG}' 
+        sh 'gcloud builds submit -t ${IMAGE_TAG} .'
       }
     }
     stage ('Deploy') {
