@@ -3,6 +3,7 @@ pipeline {
 
   environment {
     PROJECT = "lab-4-deliverable"
+    GCP_KEY= credentials('lab4')
     APP_NAME = "binary-calculator2"
     CLUSTER = "sofe3980u"
     CLUSTER_ZONE = "northamerica-northeast1-b"
@@ -57,11 +58,12 @@ spec:
     stage('Build and push image with Container Builder') {
       steps {
         container('gcloud') {
-          sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG} ./BinaryCalculatorWebapp/"
+          sh "gcloud auth activate-service-account ${JENKINS_CRED} --key-file=${GCP_KEY} --project=${PROJECT}"
+          sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG} ./BinaryCalculatorWebapp/ "
         }
       }
     }
-    stage('Deploy Canary') {
+    stage('Deploy Canary') {  
       // Canary branch
       when { branch 'canary' }
       steps {
